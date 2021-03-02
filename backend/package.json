@@ -1,0 +1,22 @@
+{
+  "name": "backend_pet_omc",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "badpenguin",
+  "license": "ISC",
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "connect-timeout": "^1.9.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "lodash": "^4.17.19",
+    "nodemailer": "^6.5.0",
+    "nodemon": "^2.0.4",
+    "pg": "^8.0.3",
+    "pg-promise": "^10.5.2"
+  }
+}

@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.jc1 {
+  justify-content: center;
+  align-items: center;
+}
+
+.jcc {
+  justify-content: center;
+  align-items: center;
+}
+
+.dfr{
+  display: flex;
+  flex-direction: row;
+}
+
+.dfc {
+  display: flex;
+  flex-direction: column;
+}
+
+.ovf {
+  overflow: auto;
+}
+
+.minraz {
+  min-width: 100%;
+  min-height: 100%;
+  overflow: auto;
+}
+
+.cell1{
+  width: 100px;
+  text-align: left;
+}
+
+.cell2{
+  width: 30px;
+  text-align: center;
+}
+
+.pd1 {
+  padding: 10px
+}
+.hg1{
+  height: calc(100vh - 51px);
+}
+
+.wd1{
+  width: 100%;
+}
+
+.fg1{
+  flex-grow: 1;
+}
+
+.mw1{
+  min-width: 50px;
+}
+
+.bcb{
+  background-color: #1f4a618f;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.mrt10{
+  margin-top: 10px;
+}
+
+.fww{
+  flex-wrap: wrap;
+}
+
+.clr_balck {
+  color: black
+}
