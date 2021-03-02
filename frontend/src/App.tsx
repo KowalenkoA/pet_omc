@@ -1,95 +1,136 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import Sort from './modules/sort/sort';
-import Table from './modules/table/table';
-import Filter from './modules/filter/filter';
-import Prev from './modules/prev/prev';
-import LangSlider from './modules/langSlider/langSlider';
-import { setDataIn, setEditFavorite, setFilterDataset } from './store/dataSet/actions';
-import { setLanguage } from './store/lang/actions';
-import {connect} from 'react-redux';
-import { ILangState, ILanguage } from './store/lang/redusers';
-let data: Array<IDataSet> = require('./data.json');
+import Loader from './modules/loader/loader';
+import axio from 'axios';
 
-export interface IDataSet {
-    id: number;
-    favourite: boolean;
-    name: string;
-    age: number;
-    phone: string;
-    image: string;
-    phrase: string;
-    video: string;
-}
+axio.defaults.baseURL = 'http://127.0.0.1:4000/api';
 
-interface appProps {
-  setDataIn: (arr: Array<IDataSet>) => void;
-  dataRedux: Array<IDataSet>;
-  arhDataSet: Array<IDataSet>;
-  setEditFavorite: (val: number) => void;
-  setFilterDataset: (arr: Array<IDataSet>) => void;
-  setLanguage: () => void;
-  langData: ILangState;
-}
+const App: React.FC = () => {
+    const [email, setEmail] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
 
-const App: React.FC<appProps> = (props) => {
-  const [rendr, setRendr] = useState<boolean>(false);
-  const [btStat, setBtStat] = useState<boolean>(false);
+    const [preload, setPreload] = useState<boolean>(false);
 
-  useEffect(() => {
-    //data.map( row => props.setDataIn(row));
-    props.setDataIn(data);
-    //setActData(data.slice(0, 10));
-  }, [])
+    const validator = () => {
+        let err = ''
+        if (email === ''){
+            err += 'Почта не заполнена!';
+        }
+        if (email.length > 50){
+            err += 'Длина почтового адреса превышает доступный лимит!';
+        }
+        if (phone === ''){
+            err += 'Номер телефона не заполнен!';
+        }
+        if (phone.length > 20){
+            err += 'Длина номера телефона превышает доступный лимит!';
+        }
+        return err;
+    }
 
-  const testClick = () => {
-    console.log( props.langData);
-  }
+    const addUser = async () => {
+        setPreload(true);
+        let err = validator();
+        if (err){
+            setPreload(false);
+            return alert(err);
+        }
+        let data = {
+            email: email,
+            phone: phone
+        }
+        await axio.post('/users/addUser', {data}).then( () => {
+            alert('Сохранение успешно');
+        }).catch( (err) => {
+            console.error(err);
+            alert('Данные не удалось сохранить')
+        });
+        setPreload(false);
+    }
 
-  const changeLang = () => {
-    props.setLanguage();
-    setRendr(!rendr)
-  }
+    const findUser = async () => {
+        setPreload(true);
+        let err = validator();
+        if (err){
+            setPreload(false);
+            return alert(err);
+        }
+        let data = {
+            email: email,
+            phone: phone
+        }
+        await axio.post('/users/findUser', {data}).then(res => {
+            alert('Пользователь существует');
+        }).catch( (err) => {
+            if (err.response.status === 400){
+                alert('Пользователь не существует');
+            }else{
+                console.error(err);
+                alert('Ошибка сервера')
+            }
+        });
+        setPreload(false);
+    }
+
+    const recovery = async () => {
+        setPreload(true);
+        let err = '';
+        if (email === ''){
+            err += 'Почта не заполнена!';
+        }
+        if (email.length > 50){
+            err += 'Длина почтового адреса превышает доступный лимит!';
+        }
+        if (err){
+            setPreload(false);
+            return alert(err);
+        }
+        let data = {
+            email: email
+        }
+        await axio.post('/users/recovery', {data}).then(res => {
+            alert('Номер телефона отправлен на почту');
+        }).catch( (err) => {
+            if (err.response.status === 404){
+                alert('Пользователь с такой почтой не существует');
+            }else{
+                console.error(err);
+                alert('Ошибка сервера')
+            }
+        });
+        setPreload(false);
+    }
 
   return (
     <div className="App">
-      <LangSlider langData={props.langData} 
-                  setLanguage={changeLang}/>
-      <div className='dfr jcc wd1'>
-        <Sort setDataIn={props.setDataIn}
-              dataRedux={props.dataRedux} 
-              langData={props.langData}
-        />
-        <div className='dfr'>
-          <button className='button' onClick={() => setBtStat(false)}>TABLE</button>
-          <button className='button' onClick={() => setBtStat(true)}>PREV</button>
-          <button onClick={testClick}>TEST</button>
+        {preload && <Loader/>}
+        <div className='dfc jcc wd1'>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <label>Email</label>
+                        </td>
+                        <td>
+                            <input onChange={ (e) => setEmail(e.target.value) } value={ email }></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Phone number</label>
+                        </td>
+                        <td>
+                            <input onChange={ (e) => setPhone(e.target.value) } value={ phone }></input>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button className='button' onClick={ addUser }>Добавить</button>
+            <button className='button button_green' onClick={ findUser }>Проверить</button>
+            <button className='button button_yellow' onClick={ recovery }>Восстановить</button>
         </div>
-      </div>
-      <div className='dfc jcc wd1'>
-        <Filter dataSet={props.dataRedux} arhDataSet={props.arhDataSet} setFilterDataset={props.setFilterDataset}/>
-      </div>
-      {btStat && <Prev dataSet={props.dataRedux} setEditFavorite={props.setEditFavorite}/>}
-      {!btStat && <Table dataSet={props.dataRedux} setEditFavorite={props.setEditFavorite} setFilterDataset={props.setFilterDataset}/>}
     </div>
   );
 }
 
-//export default App;
-
-const pushStateToProps = (state: any) => {
-  return{
-      dataRedux: state.dataSet.dataSet,
-      arhDataSet: state.dataSet.arhDataSet,
-      langData: state.langData
-  };
-};
-
-const pushDispatchToProps = {
-  setDataIn,
-  setEditFavorite,
-  setFilterDataset,
-  setLanguage
-};
-
-export default connect(pushStateToProps, pushDispatchToProps)(App);
+export default App;

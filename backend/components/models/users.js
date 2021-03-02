@@ -4,8 +4,6 @@ const conn = require('../config.js');
 
 const pool_db = new Pool (conn.conn_omc);
 
-//-----
-
 exports.addUser = (email, phone, cb) => {
     let sql = '';
     sql = `INSERT INTO public.users(
@@ -21,12 +19,12 @@ exports.addUser = (email, phone, cb) => {
     });
 };
 
-exports.allUsers = (cb) => {
+exports.findPhone = async (email, cb) => {
     let sql = '';
-    sql = `SELECT * FROM public.users`;
-    pool_db.query(sql).then (
+    sql = `SELECT us_phone FROM public.users WHERE us_email = '${email}'`;
+    await pool_db.query(sql).then (
         (res) => {
-            cb('',res.rows);
+            cb('', res.rows);
         }
     ).catch((err) => {
         console.error(sql)
@@ -34,10 +32,10 @@ exports.allUsers = (cb) => {
     });
 };
 
-exports.findPhone = async (email, cb) => {
+exports.findUser = (email, phone, cb) => {
     let sql = '';
-    sql = `SELECT us_phone FROM public.users WHERE us_email = '${email}'`;
-    await pool_db.query(sql).then (
+    sql = `SELECT * FROM public.users WHERE us_email = '${email}' and us_phone = '${phone}'`;
+    pool_db.query(sql).then (
         (res) => {
             cb('', res.rows);
         }

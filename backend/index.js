@@ -11,5 +11,5 @@ app.use(cors())
 require('./components/routes.js')(app);
 
 app.listen(serverPort, function() {
-    console.log('BACKEND TEST IS RUNNING ON PORT: ' + serverPort);
+    console.log('BACKEND RUNNING ON PORT: ' + serverPort);
 });
